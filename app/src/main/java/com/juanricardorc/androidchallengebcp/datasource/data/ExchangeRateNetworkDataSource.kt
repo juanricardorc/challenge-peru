@@ -3,12 +3,10 @@ package com.juanricardorc.androidchallengebcp.datasource.data
 import com.juanricardorc.androidchallengebcp.datasource.response.ExChangeRateResponse
 import com.juanricardorc.androidchallengebcp.datasource.response.MonetaryUnitResponse
 import com.juanricardorc.androidchallengebcp.datasource.service.ApiService
-import com.juanricardorc.androidchallengebcp.repository.ExchangeRateRepository
-import com.juanricardorc.uicomponents.exchangerate.MXN
-import com.juanricardorc.uicomponents.exchangerate.PEN
-import com.juanricardorc.uicomponents.exchangerate.USD
+import com.juanricardorc.androidchallengebcp.domain.repository.ExchangeRateRepository
 
-class ExchangeRateNetworkDataSource : ExchangeRateRepository {
+class ExchangeRateNetworkDataSource :
+    ExchangeRateRepository {
 
     private var apiService: ApiService
 

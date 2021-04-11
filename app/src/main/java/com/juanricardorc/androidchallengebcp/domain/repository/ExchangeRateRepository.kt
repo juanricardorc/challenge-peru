@@ -1,4 +1,4 @@
-package com.juanricardorc.androidchallengebcp.repository
+package com.juanricardorc.androidchallengebcp.domain.repository
 
 import com.juanricardorc.androidchallengebcp.datasource.response.ExChangeRateResponse
 

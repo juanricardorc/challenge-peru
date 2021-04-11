@@ -9,7 +9,7 @@ import com.juanricardorc.androidchallengebcp.datasource.data.ExchangeRateNetwork
 import com.juanricardorc.androidchallengebcp.datasource.network.ExchangeRateClient
 import com.juanricardorc.androidchallengebcp.datasource.response.MonetaryUnitResponse
 import com.juanricardorc.androidchallengebcp.datasource.service.ApiService
-import com.juanricardorc.androidchallengebcp.repository.ExchangeRateRepository
+import com.juanricardorc.androidchallengebcp.domain.repository.ExchangeRateRepository
 import com.juanricardorc.uicomponents.exchangerate.MXN
 import com.juanricardorc.uicomponents.exchangerate.PEN
 import com.juanricardorc.uicomponents.exchangerate.TWO
