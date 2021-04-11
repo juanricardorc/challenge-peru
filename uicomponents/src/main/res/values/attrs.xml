@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="ExchangeRateView">
+        <attr name="loading_background" format="reference"></attr>
+        <attr name="loading_text_message" format="string"></attr>
+        <attr name="loading_text_size_message" format="dimension"></attr>
+        <attr name="loading_text_color_message" format="reference"></attr>
+        <attr name="loading_message_type_face" format="enum">
+            <enum name="regular" value="0"></enum>
+            <enum name="regular_italic" value="1"></enum>
+            <enum name="bold" value="2"></enum>
+            <enum name="bold_italic" value="3"></enum>
+        </attr>
+        <attr name="loading_icon_color" format="reference"></attr>
+    </declare-styleable>
+</resources>

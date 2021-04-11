@@ -1,0 +1,3 @@
+include ':uicomponents'
+include ':app'
+rootProject.name = "AndroidChallengeBCP"

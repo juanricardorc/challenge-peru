@@ -1,0 +1,20 @@
+package com.juanricardorc.androidchallengebcp.datasource.service
+
+import com.juanricardorc.androidchallengebcp.datasource.response.ExChangeRateResponse
+import com.juanricardorc.androidchallengebcp.datasource.response.MonetaryUnitListResponse
+import retrofit2.Response
+import retrofit2.http.GET
+
+interface ApiService {
+    @GET("monetary-unit")
+    suspend fun getMonetaryUnitListResponse(): Response<MonetaryUnitListResponse>
+
+    @GET("exchange-rate/usd")
+    suspend fun getExchangeRateUsd(): Response<ExChangeRateResponse>
+
+    @GET("exchange-rate/pen")
+    suspend fun getExchangeRatePen(): Response<ExChangeRateResponse>
+
+    @GET("exchange-rate/mxn")
+    suspend fun getExchangeRateMxn(): Response<ExChangeRateResponse>
+}
