@@ -1,9 +1,8 @@
 package com.juanricardorc.androidchallengebcp.presentation
 
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
@@ -25,11 +24,31 @@ class ExchangeRateFragment : Fragment(), ExchangeRateBelowButtonListener,
         savedInstanceState: Bundle?
     ): View? {
         binding = FragmentExchangeRateBinding.inflate(layoutInflater, container, false)
-        binding.exchangeRateView.setExchangeRateAboveButtonListener(this)
-        binding.exchangeRateView.setExchangeRateBelowButtonListener(this)
         setupObservers()
-        initData()
+        setupToolbar()
+        initialize()
         return binding.root
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        inflater.inflate(R.menu.menu_main, menu);
+        super.onCreateOptionsMenu(menu, inflater)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            R.id.action_settings -> {
+                this.binding.exchangeRateView.setAboveEditText("3")
+                return true
+            }
+        }
+        return false
+    }
+
+    private fun setupToolbar() {
+        setHasOptionsMenu(true)
+        binding.appBarLayout.toolbar.title = "Exchange Rates"
+        (activity as AppCompatActivity?)!!.setSupportActionBar(binding.appBarLayout.toolbar)
     }
 
     private fun setupObservers() {
@@ -51,7 +70,9 @@ class ExchangeRateFragment : Fragment(), ExchangeRateBelowButtonListener,
             })
     }
 
-    private fun initData() {
+    private fun initialize() {
+        this.binding.exchangeRateView.setExchangeRateAboveButtonListener(this)
+        this.binding.exchangeRateView.setExchangeRateBelowButtonListener(this)
         this.binding.exchangeRateView.setAboveEditText("2")
     }
 

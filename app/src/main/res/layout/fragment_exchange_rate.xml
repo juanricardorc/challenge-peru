@@ -6,6 +6,13 @@
     android:layout_height="match_parent"
     tools:context=".presentation.ExchangeRateFragment">
 
+    <include
+        android:id="@+id/app_bar_layout"
+        layout="@layout/app_bar_layout"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <com.juanricardorc.uicomponents.exchangerate.ExchangeRateView
         android:id="@+id/exchange_rate_view"
         android:layout_width="match_parent"
@@ -15,7 +22,6 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toTopOf="parent" />
 
-    </com.juanricardorc.uicomponents.exchangerate.ExchangeRateView>
 </androidx.constraintlayout.widget.ConstraintLayout>
