@@ -17,9 +17,9 @@
 
     <fragment
         android:id="@+id/FirstFragment"
-        android:name="com.juanricardorc.androidchallengebcp.presentation.FirstFragment"
+        android:name="com.juanricardorc.androidchallengebcp.presentation.ExchangeRateFragment"
         android:label="@string/first_fragment_label"
-        tools:layout="@layout/fragment_first">
+        tools:layout="@layout/fragment_exchange_rate">
 
         <action
             android:id="@+id/action_FirstFragment_to_SecondFragment"
@@ -27,9 +27,9 @@
     </fragment>
     <fragment
         android:id="@+id/SecondFragment"
-        android:name="com.juanricardorc.androidchallengebcp.presentation.CountryFragment"
+        android:name="com.juanricardorc.androidchallengebcp.presentation.MonetaryUnitFragment"
         android:label="@string/second_fragment_label"
-        tools:layout="@layout/fragment_country">
+        tools:layout="@layout/fragment_monetary_unit">
 
         <action
             android:id="@+id/action_SecondFragment_to_FirstFragment"

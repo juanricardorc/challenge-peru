@@ -12,18 +12,18 @@ import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.juanricardorc.androidchallengebcp.R
-import com.juanricardorc.androidchallengebcp.databinding.FragmentCountryBinding
+import com.juanricardorc.androidchallengebcp.databinding.FragmentMonetaryUnitBinding
 
-class CountryFragment : Fragment() {
+class MonetaryUnitFragment : Fragment() {
 
-    private lateinit var binding: FragmentCountryBinding
+    private lateinit var binding: FragmentMonetaryUnitBinding
     private val exchangeRateViewModel: ExchangeRateViewModel by activityViewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        this.binding = FragmentCountryBinding.inflate(layoutInflater, container, false)
+        this.binding = FragmentMonetaryUnitBinding.inflate(layoutInflater, container, false)
         setupRecyclerView()
         return binding.root
     }
@@ -31,7 +31,7 @@ class CountryFragment : Fragment() {
     private fun setupRecyclerView() {
         context?.let { exchangeRateViewModel.getListMonetaryUnit(it) }
         exchangeRateViewModel.getListMonetaryUnitResponse().observe(viewLifecycleOwner, Observer {
-            var countryAdapter:CountryAdapter = CountryAdapter(it)
+            var countryAdapter: CountryAdapter = CountryAdapter(it)
             binding.countriesRecyclerView.layoutManager = LinearLayoutManager(context)
             binding.countriesRecyclerView.adapter = countryAdapter
         })

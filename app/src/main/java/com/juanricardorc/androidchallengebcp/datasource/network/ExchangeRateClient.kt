@@ -23,7 +23,7 @@ class ExchangeRateClient() : ApiClient() {
     private fun setup() {
         logging = HttpLoggingInterceptor()
         logging.level = HttpLoggingInterceptor.Level.BODY
-        builder = getOkHttpClient(context)
+        builder = getOkHttpClient()
         builder.connectTimeout(30, TimeUnit.SECONDS)
         builder.readTimeout(30, TimeUnit.SECONDS)
         builder.addInterceptor(logging)

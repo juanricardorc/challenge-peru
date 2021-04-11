@@ -9,21 +9,22 @@ import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import com.juanricardorc.androidchallengebcp.R
-import com.juanricardorc.androidchallengebcp.databinding.FragmentFirstBinding
+import com.juanricardorc.androidchallengebcp.databinding.FragmentExchangeRateBinding
 import com.juanricardorc.androidchallengebcp.datasource.response.MonetaryUnitResponse
 import com.juanricardorc.uicomponents.exchangerate.ExchangeRateAboveButtonListener
 import com.juanricardorc.uicomponents.exchangerate.ExchangeRateBelowButtonListener
 
-class FirstFragment : Fragment(), ExchangeRateBelowButtonListener, ExchangeRateAboveButtonListener {
+class ExchangeRateFragment : Fragment(), ExchangeRateBelowButtonListener,
+    ExchangeRateAboveButtonListener {
 
-    private lateinit var binding: FragmentFirstBinding
+    private lateinit var binding: FragmentExchangeRateBinding
     private val exchangeRateViewModel: ExchangeRateViewModel by activityViewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        binding = FragmentFirstBinding.inflate(layoutInflater, container, false)
+        binding = FragmentExchangeRateBinding.inflate(layoutInflater, container, false)
         binding.exchangeRateView.setExchangeRateAboveButtonListener(this)
         binding.exchangeRateView.setExchangeRateBelowButtonListener(this)
         setupObservers()
