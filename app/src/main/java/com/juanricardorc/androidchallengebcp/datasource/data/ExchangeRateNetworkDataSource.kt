@@ -1,4 +1,4 @@
-package com.juanricardorc.androidchallengebcp.datasource
+package com.juanricardorc.androidchallengebcp.datasource.data
 
 import com.juanricardorc.androidchallengebcp.datasource.response.ExChangeRateResponse
 import com.juanricardorc.androidchallengebcp.datasource.response.MonetaryUnitResponse

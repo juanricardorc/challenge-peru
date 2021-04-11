@@ -1,13 +1,11 @@
 package com.juanricardorc.androidchallengebcp.presentation
 
 import android.content.Context
-import android.view.View
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.juanricardorc.androidchallengebcp.datasource.ExchangeRateNetworkDataSource
-import com.juanricardorc.androidchallengebcp.datasource.network.ApiClient
+import com.juanricardorc.androidchallengebcp.datasource.data.ExchangeRateNetworkDataSource
 import com.juanricardorc.androidchallengebcp.datasource.network.ExchangeRateClient
 import com.juanricardorc.androidchallengebcp.datasource.response.MonetaryUnitResponse
 import com.juanricardorc.androidchallengebcp.datasource.service.ApiService
@@ -18,7 +16,6 @@ import com.juanricardorc.uicomponents.exchangerate.TWO
 import com.juanricardorc.uicomponents.exchangerate.USD
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import java.util.stream.Collectors
 
 class ExchangeRateViewModel : ViewModel() {
@@ -44,7 +41,10 @@ class ExchangeRateViewModel : ViewModel() {
         var apiService = ExchangeRateClient
             .getInstance(context)
             .createService(ApiService::class.java)
-        var exchangeRateRepository = ExchangeRateNetworkDataSource(apiService)
+        var exchangeRateRepository =
+            ExchangeRateNetworkDataSource(
+                apiService
+            )
         viewModelScope.launch(Dispatchers.IO) {
             listMonetaryUnitResponse.postValue(exchangeRateRepository.getListMonetaryUnit())
             setupMonetaryUnit(exchangeRateRepository.getListMonetaryUnit())
@@ -63,7 +63,10 @@ class ExchangeRateViewModel : ViewModel() {
         var apiService = ExchangeRateClient
             .getInstance(context)
             .createService(ApiService::class.java)
-        var exchangeRateRepository = ExchangeRateNetworkDataSource(apiService)
+        var exchangeRateRepository =
+            ExchangeRateNetworkDataSource(
+                apiService
+            )
 
         when (monetary) {
             USD -> {

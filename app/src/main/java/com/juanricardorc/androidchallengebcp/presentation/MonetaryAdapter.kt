@@ -9,8 +9,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.juanricardorc.androidchallengebcp.R
 import com.juanricardorc.androidchallengebcp.datasource.response.MonetaryUnitResponse
 
-class CountryAdapter(var countries: List<MonetaryUnitResponse>) :
-    RecyclerView.Adapter<CountryAdapter.CountryViewHolder>() {
+class MonetaryAdapter(var countries: List<MonetaryUnitResponse>) :
+    RecyclerView.Adapter<MonetaryAdapter.CountryViewHolder>() {
 
     class CountryViewHolder(view: View) : RecyclerView.ViewHolder(view) {
 
