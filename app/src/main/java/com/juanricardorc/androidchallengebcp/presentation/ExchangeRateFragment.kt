@@ -1,7 +1,9 @@
 package com.juanricardorc.androidchallengebcp.presentation
 
 import android.os.Bundle
+import android.util.Log
 import android.view.*
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
@@ -32,28 +34,14 @@ class ExchangeRateFragment : Fragment(), ExchangeRateBelowButtonListener,
         return binding.root
     }
 
-    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        inflater.inflate(R.menu.menu_main, menu);
-        super.onCreateOptionsMenu(menu, inflater)
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when (item.itemId) {
-            R.id.action_settings -> {
-                this.binding.exchangeRateView.setAboveEditText("3")
-                return true
-            }
-        }
-        return false
-    }
-
     private fun setupToolbar() {
         setHasOptionsMenu(true)
-        binding.appBarLayout.toolbar.title = "Exchange Rates"
+        binding.appBarLayout.toolbar.title = getString(R.string.app_name)
         (activity as AppCompatActivity?)!!.setSupportActionBar(binding.appBarLayout.toolbar)
     }
 
     private fun setupObservers() {
+
         context?.let { exchangeRateViewModel.getListMonetaryUnit(it) }
 
         exchangeRateViewModel.getAboveValue()
@@ -70,19 +58,33 @@ class ExchangeRateFragment : Fragment(), ExchangeRateBelowButtonListener,
             .observe(viewLifecycleOwner, Observer {
                 setBelowEditText(it)
             })
+
+        exchangeRateViewModel.getMonetaryUnitNotFound()
+            .observe(viewLifecycleOwner, Observer {
+                if (it) {
+                    showMessageNotFound(getString((R.string.monetary_unit_not_found)))
+                }
+            })
+    }
+
+    private fun showMessageNotFound(message: String) {
+        Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
     }
 
     private fun setBelowEditText(rateResponse: RateResponse) {
-        var aboveValue = this.binding.exchangeRateView.getAboveText()
-        var result = aboveValue.toFloat() * rateResponse.value
-        this.binding.exchangeRateView.setBelowEditText(result.toString())
+        var aboveText = this.binding.exchangeRateView.getAboveText()
+        Log.v("Logbcp: ", "aboveText -> $aboveText - rateResponse.value -> ${rateResponse.value}")
+        if (!aboveText.isNullOrBlank() && rateResponse != null) {
+            var result = aboveText.toFloat() * rateResponse.value
+            this.binding.exchangeRateView.setBelowEditText(result.toString())
+        }
     }
 
     private fun initialize() {
         this.binding.exchangeRateView.setExchangeRateAboveButtonListener(this)
         this.binding.exchangeRateView.setExchangeRateBelowButtonListener(this)
         this.binding.exchangeRateView.setExchangeButtonListener(this)
-        this.binding.exchangeRateView.setAboveEditText("2")
+        this.binding.exchangeRateView.setAboveEditText("1")
     }
 
     private fun setupAboveButtonText(monetaryUnitResponse: MonetaryUnitResponse) {
@@ -94,12 +96,14 @@ class ExchangeRateFragment : Fragment(), ExchangeRateBelowButtonListener,
         binding.exchangeRateView.setBelowButtonText(monetaryUnitResponse.country)
     }
 
-    override fun onBelowValue(view: View, value: String) {
-        findNavController().navigate(R.id.action_FirstFragment_to_SecondFragment)
+    override fun onAboveValue(view: View, value: String) {
+        this.exchangeRateViewModel.setOrigen(above = true, below = false)
+        findNavController().navigate(R.id.action_ExchangeRateFragment_to_MonetaryUnitFragment)
     }
 
-    override fun onAboveValue(view: View, value: String) {
-        findNavController().navigate(R.id.action_FirstFragment_to_SecondFragment)
+    override fun onBelowValue(view: View, value: String) {
+        this.exchangeRateViewModel.setOrigen(above = false, below = true)
+        findNavController().navigate(R.id.action_ExchangeRateFragment_to_MonetaryUnitFragment)
     }
 
     private fun getExchangeRate(monetary: String) {
@@ -109,9 +113,38 @@ class ExchangeRateFragment : Fragment(), ExchangeRateBelowButtonListener,
     override fun onExchange(view: View, above: String, below: String) {
         val belowValue = this.exchangeRateViewModel.getBelowValue().value
         val aboveValue = this.exchangeRateViewModel.getAboveValue().value
-        belowValue?.let { this.exchangeRateViewModel.setAboveValue(it) }
-        aboveValue?.let { this.exchangeRateViewModel.setBelowValue(it) }
-        this.binding.exchangeRateView.setAboveEditText(this.binding.exchangeRateView.getBelowText())
-        this.binding.exchangeRateView.setBelowEditText(this.binding.exchangeRateView.getAboveText())
+
+        belowValue?.let {
+            this.exchangeRateViewModel.setAboveValue(it)
+        }
+        aboveValue?.let {
+            this.exchangeRateViewModel.setBelowValue(it)
+        }
+
+        val belowText = this.binding.exchangeRateView.getBelowText()
+        this.binding.exchangeRateView.setAboveEditText(belowText)
+
+        val newBelowValue = this.exchangeRateViewModel.getBelowValue().value
+        //Log.v("Logbcp: ", "newBelowValue -> $newBelowValue")
+        context?.let {
+            this.exchangeRateViewModel.getExchangeRate(
+                newBelowValue?.monetary, it
+            )
+        }
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        inflater.inflate(R.menu.menu_main, menu);
+        super.onCreateOptionsMenu(menu, inflater)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            R.id.action_settings -> {
+                this.binding.exchangeRateView.setAboveEditText("3")
+                return true
+            }
+        }
+        return false
     }
 }

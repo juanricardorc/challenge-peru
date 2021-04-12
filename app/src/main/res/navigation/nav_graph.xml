@@ -11,28 +11,28 @@
         android:label="@string/splash_fragment_label"
         tools:layout="@layout/fragment_splash">
         <action
-            android:id="@+id/action_SplashFragment_to_FirstFragment"
-            app:destination="@id/FirstFragment" />
+            android:id="@+id/action_SplashFragment_to_ExchangeRateFragment"
+            app:destination="@id/ExchangeRateFragment" />
     </fragment>
 
     <fragment
-        android:id="@+id/FirstFragment"
+        android:id="@+id/ExchangeRateFragment"
         android:name="com.juanricardorc.androidchallengebcp.presentation.ExchangeRateFragment"
-        android:label="@string/first_fragment_label"
+        android:label="@string/exchange_rate_fragment_label"
         tools:layout="@layout/fragment_exchange_rate">
 
         <action
-            android:id="@+id/action_FirstFragment_to_SecondFragment"
-            app:destination="@id/SecondFragment" />
+            android:id="@+id/action_ExchangeRateFragment_to_MonetaryUnitFragment"
+            app:destination="@id/MonetaryUnitFragment" />
     </fragment>
     <fragment
-        android:id="@+id/SecondFragment"
+        android:id="@+id/MonetaryUnitFragment"
         android:name="com.juanricardorc.androidchallengebcp.presentation.MonetaryUnitFragment"
-        android:label="@string/second_fragment_label"
+        android:label="@string/monetary_unit_fragment_label"
         tools:layout="@layout/fragment_monetary_unit">
 
         <action
-            android:id="@+id/action_SecondFragment_to_FirstFragment"
-            app:destination="@id/FirstFragment" />
+            android:id="@+id/action_MonetaryUnitFragment_to_ExchangeRateFragment"
+            app:destination="@id/ExchangeRateFragment" />
     </fragment>
 </navigation>

@@ -12,8 +12,9 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.juanricardorc.androidchallengebcp.R
 import com.juanricardorc.androidchallengebcp.databinding.FragmentMonetaryUnitBinding
+import com.juanricardorc.androidchallengebcp.datasource.response.MonetaryUnitResponse
 
-class MonetaryUnitFragment : Fragment() {
+class MonetaryUnitFragment : Fragment(), MonetaryUnitListener {
 
     private lateinit var binding: FragmentMonetaryUnitBinding
     private val exchangeRateViewModel: ExchangeRateViewModel by activityViewModels()
@@ -35,6 +36,7 @@ class MonetaryUnitFragment : Fragment() {
             .observe(viewLifecycleOwner, Observer { model ->
                 run {
                     var monetaryAdapter = context?.let { MonetaryUnitAdapter(model, it) }
+                    monetaryAdapter?.setMonetaryUnitListener(this)
                     binding.countriesRecyclerView.layoutManager = LinearLayoutManager(context)
                     binding.countriesRecyclerView.adapter = monetaryAdapter
                 }
@@ -48,7 +50,18 @@ class MonetaryUnitFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         view.findViewById<Button>(R.id.button_second).setOnClickListener {
-            findNavController().navigate(R.id.action_SecondFragment_to_FirstFragment)
+            findNavController().navigate(R.id.action_MonetaryUnitFragment_to_ExchangeRateFragment)
         }
+    }
+
+    override fun onClickMonetaryUnit(value: Any) {
+        if (value is MonetaryUnitResponse) {
+            if (exchangeRateViewModel.getAboveFlag()) {
+                this.exchangeRateViewModel.setAboveValue(value)
+            } else if (exchangeRateViewModel.getBelowFlag()) {
+                this.exchangeRateViewModel.setBelowValue(value)
+            }
+        }
+        findNavController().navigate(R.id.action_MonetaryUnitFragment_to_ExchangeRateFragment)
     }
 }

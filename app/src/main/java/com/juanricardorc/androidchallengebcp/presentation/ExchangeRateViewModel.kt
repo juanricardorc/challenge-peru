@@ -20,18 +20,14 @@ import java.util.stream.Collectors
 class ExchangeRateViewModel : ViewModel() {
     private var aboveValue: MutableLiveData<MonetaryUnitResponse> = MutableLiveData()
     private var belowValue: MutableLiveData<MonetaryUnitResponse> = MutableLiveData()
+
     private var rateResponse: MutableLiveData<RateResponse> = MutableLiveData()
     private var listMonetaryUnitResponse: MutableLiveData<List<MonetaryUnitResponse>> =
         MutableLiveData()
     private var exchangeValue: Float = 0.0f
-
-    fun getAboveValue(): LiveData<MonetaryUnitResponse> {
-        return aboveValue
-    }
-
-    fun getBelowValue(): LiveData<MonetaryUnitResponse> {
-        return belowValue
-    }
+    private var monetaryUnitNotFound: MutableLiveData<Boolean> = MutableLiveData(false)
+    private var aboveFlag: Boolean = false
+    private var belowFlag: Boolean = false
 
     fun setAboveValue(monetaryUnitResponse: MonetaryUnitResponse) {
         this.aboveValue.postValue(monetaryUnitResponse)
@@ -61,13 +57,22 @@ class ExchangeRateViewModel : ViewModel() {
 
     private fun setupMonetaryUnit(listMonetaryUnitResponse: List<MonetaryUnitResponse>) {
         if (listMonetaryUnitResponse.size >= TWO) {
-            val shuffled = listMonetaryUnitResponse.shuffled()
-            aboveValue.postValue(shuffled[0])
-            belowValue.postValue(shuffled[1])
+            //val shuffled = listMonetaryUnitResponse.shuffled()
+            aboveValue.postValue(listMonetaryUnitResponse[ZERO])
+            belowValue.postValue(listMonetaryUnitResponse[ONE])
         }
     }
 
-    fun getExchangeRate(monetary: String, context: Context) {
+    fun getAboveValue(): LiveData<MonetaryUnitResponse> {
+        return aboveValue
+    }
+
+    fun getBelowValue(): LiveData<MonetaryUnitResponse> {
+        return belowValue
+    }
+
+
+    fun getExchangeRate(monetary: String?, context: Context) {
         var apiService = ExchangeRateClient
             .getInstance(context)
             .createService(ApiService::class.java)
@@ -93,9 +98,17 @@ class ExchangeRateViewModel : ViewModel() {
                 getExchangeRateEur(monetary, exchangeRateRepository)
             }
             else -> {
-                other()
+                notFound()
             }
         }
+    }
+
+    private fun notFound() {
+        this.monetaryUnitNotFound.postValue(true)
+    }
+
+    fun getMonetaryUnitNotFound(): LiveData<Boolean> {
+        return monetaryUnitNotFound
     }
 
     private fun getExchangeRateEur(
@@ -156,15 +169,14 @@ class ExchangeRateViewModel : ViewModel() {
     private fun setupResult(exChangeRateResponse: ExChangeRateResponse) {
         val rates = exChangeRateResponse?.rates
         val filter = rates.stream().filter {
-            it.monetary == getBelowValue().value!!.monetary
+            it.monetary == getBelowValue().value?.monetary
         }.collect(Collectors.toList())
-        if (filter.size >= 1) {
-            rateResponse.postValue(filter[0])
-        }
-    }
 
-    private fun other() {
-        //rateResponse.postValue(RateResponse("", "", 0.00f))
+        if (filter != null && filter.size >= ONE) {
+            rateResponse.postValue(filter[ZERO])
+        } else {
+            notFound()
+        }
     }
 
     fun getRateResponse(): LiveData<RateResponse> {
@@ -177,5 +189,18 @@ class ExchangeRateViewModel : ViewModel() {
 
     fun setExchangeValue(exchangeValue: Float) {
         this.exchangeValue = exchangeValue
+    }
+
+    fun setOrigen(above: Boolean, below: Boolean) {
+        this.aboveFlag = above
+        this.belowFlag = below
+    }
+
+    fun getAboveFlag(): Boolean {
+        return aboveFlag
+    }
+
+    fun getBelowFlag(): Boolean {
+        return belowFlag
     }
 }

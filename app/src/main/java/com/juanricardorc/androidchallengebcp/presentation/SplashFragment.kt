@@ -23,7 +23,7 @@ class SplashFragment : Fragment() {
     override fun onStart() {
         super.onStart()
         Handler().postDelayed(Runnable {
-            findNavController().navigate(R.id.action_SplashFragment_to_FirstFragment)
+            findNavController().navigate(R.id.action_SplashFragment_to_ExchangeRateFragment)
         }, 2500)
     }
 }
