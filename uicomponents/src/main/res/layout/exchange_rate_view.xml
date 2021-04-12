@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    android:layout_height="match_parent">
 
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:layout_margin="12dp"
-        app:cardElevation="4dp"
         app:cardCornerRadius="12dp"
-        android:layout_height="wrap_content">
+        app:cardElevation="4dp">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -26,24 +26,35 @@
                     android:id="@+id/above_edit_text"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_weight="0.7"
+                    android:layout_weight="0.5"
                     android:hint="0.00" />
 
-                <Button
-                    android:id="@+id/above_button"
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/above_material_button"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_weight="0.3"
-                    android:text="Soles" />
+                    android:layout_weight="0.5"
+                    android:text="Soles"
+                    android:textAllCaps="false"
+                    app:cornerRadius="24dp" />
 
             </LinearLayout>
 
-            <Button
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="0.3"
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/exchange_material_card_view"
+                android:layout_width="84dp"
+                android:layout_height="64dp"
                 android:layout_gravity="right"
-                android:text="Actualizar" />
+                app:cardElevation="4dp">
+
+                <ImageView
+                    android:id="@+id/exchange_image_view"
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
+                    android:layout_gravity="center"
+                    android:src="@drawable/ic_sort" />
+
+            </com.google.android.material.card.MaterialCardView>
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -54,15 +65,17 @@
                     android:id="@+id/below_edit_text"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_weight="0.7"
+                    android:layout_weight="0.5"
                     android:hint="0.00" />
 
-                <Button
-                    android:id="@+id/below_button"
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/below_material_button"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_weight="0.3"
-                    android:text="Dolares" />
+                    android:layout_weight="0.5"
+                    android:text="Dolares"
+                    android:textAllCaps="false"
+                    app:cornerRadius="24dp" />
 
             </LinearLayout>
 

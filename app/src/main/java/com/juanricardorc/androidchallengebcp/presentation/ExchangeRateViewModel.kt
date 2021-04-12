@@ -7,13 +7,12 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.juanricardorc.androidchallengebcp.datasource.data.ExchangeRateNetworkDataSource
 import com.juanricardorc.androidchallengebcp.datasource.network.ExchangeRateClient
+import com.juanricardorc.androidchallengebcp.datasource.response.ExChangeRateResponse
 import com.juanricardorc.androidchallengebcp.datasource.response.MonetaryUnitResponse
+import com.juanricardorc.androidchallengebcp.datasource.response.RateResponse
 import com.juanricardorc.androidchallengebcp.datasource.service.ApiService
 import com.juanricardorc.androidchallengebcp.domain.repository.ExchangeRateRepository
-import com.juanricardorc.uicomponents.exchangerate.MXN
-import com.juanricardorc.uicomponents.exchangerate.PEN
-import com.juanricardorc.uicomponents.exchangerate.TWO
-import com.juanricardorc.uicomponents.exchangerate.USD
+import com.juanricardorc.uicomponents.exchangerate.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.util.stream.Collectors
@@ -21,9 +20,10 @@ import java.util.stream.Collectors
 class ExchangeRateViewModel : ViewModel() {
     private var aboveValue: MutableLiveData<MonetaryUnitResponse> = MutableLiveData()
     private var belowValue: MutableLiveData<MonetaryUnitResponse> = MutableLiveData()
-    private var result: MutableLiveData<Float> = MutableLiveData()
+    private var rateResponse: MutableLiveData<RateResponse> = MutableLiveData()
     private var listMonetaryUnitResponse: MutableLiveData<List<MonetaryUnitResponse>> =
         MutableLiveData()
+    private var exchangeValue: Float = 0.0f
 
     fun getAboveValue(): LiveData<MonetaryUnitResponse> {
         return aboveValue
@@ -31,6 +31,14 @@ class ExchangeRateViewModel : ViewModel() {
 
     fun getBelowValue(): LiveData<MonetaryUnitResponse> {
         return belowValue
+    }
+
+    fun setAboveValue(monetaryUnitResponse: MonetaryUnitResponse) {
+        this.aboveValue.postValue(monetaryUnitResponse)
+    }
+
+    fun setBelowValue(monetaryUnitResponse: MonetaryUnitResponse) {
+        this.belowValue.postValue(monetaryUnitResponse)
     }
 
     fun getListMonetaryUnitResponse(): LiveData<List<MonetaryUnitResponse>> {
@@ -78,9 +86,37 @@ class ExchangeRateViewModel : ViewModel() {
             MXN -> {
                 getExchangeRateMxn(monetary, exchangeRateRepository)
             }
+            BRL -> {
+                getExchangeRateBrl(monetary, exchangeRateRepository)
+            }
+            EUR -> {
+                getExchangeRateEur(monetary, exchangeRateRepository)
+            }
             else -> {
                 other()
             }
+        }
+    }
+
+    private fun getExchangeRateEur(
+        monetary: String,
+        exchangeRateRepository: ExchangeRateRepository
+    ) {
+        viewModelScope.launch(Dispatchers.IO) {
+            var exChangeRateResponse = exchangeRateRepository
+                .getExchangeRateEur(monetary)
+            exChangeRateResponse?.let { setupResult(it) }
+        }
+    }
+
+    private fun getExchangeRateBrl(
+        monetary: String,
+        exchangeRateRepository: ExchangeRateRepository
+    ) {
+        viewModelScope.launch(Dispatchers.IO) {
+            var exChangeRateResponse = exchangeRateRepository
+                .getExchangeRateBrl(monetary)
+            exChangeRateResponse?.let { setupResult(it) }
         }
     }
 
@@ -91,15 +127,7 @@ class ExchangeRateViewModel : ViewModel() {
         viewModelScope.launch(Dispatchers.IO) {
             var exChangeRateResponse = exchangeRateRepository
                 .getExchangeRateUsd(monetary)
-            val rates = exChangeRateResponse.rates
-            val filter = rates.stream().filter {
-                it.monetary == getBelowValue().value!!.monetary
-            }.collect(Collectors.toList())
-
-            if (filter.size >= 1) {
-                val value = filter[0].value
-                result.postValue(value)
-            }
+            exChangeRateResponse?.let { setupResult(it) }
         }
     }
 
@@ -109,16 +137,8 @@ class ExchangeRateViewModel : ViewModel() {
     ) {
         viewModelScope.launch(Dispatchers.IO) {
             var exChangeRateResponse = exchangeRateRepository
-                .getExchangeRateUsd(monetary)
-            val rates = exChangeRateResponse.rates
-            val filter = rates.stream().filter {
-                it.monetary == getBelowValue().value!!.monetary
-            }.collect(Collectors.toList())
-
-            if (filter.size >= 1) {
-                val value = filter[0].value
-                result.postValue(value)
-            }
+                .getExchangeRatePen(monetary)
+            exChangeRateResponse?.let { setupResult(it) }
         }
     }
 
@@ -128,24 +148,34 @@ class ExchangeRateViewModel : ViewModel() {
     ) {
         viewModelScope.launch(Dispatchers.IO) {
             var exChangeRateResponse = exchangeRateRepository
-                .getExchangeRateUsd(monetary)
-            val rates = exChangeRateResponse.rates
-            val filter = rates.stream().filter {
-                it.monetary == getBelowValue().value!!.monetary
-            }.collect(Collectors.toList())
+                .getExchangeRateMxn(monetary)
+            exChangeRateResponse?.let { setupResult(it) }
+        }
+    }
 
-            if (filter.size >= 1) {
-                val value = filter[0].value
-                result.postValue(value)
-            }
+    private fun setupResult(exChangeRateResponse: ExChangeRateResponse) {
+        val rates = exChangeRateResponse?.rates
+        val filter = rates.stream().filter {
+            it.monetary == getBelowValue().value!!.monetary
+        }.collect(Collectors.toList())
+        if (filter.size >= 1) {
+            rateResponse.postValue(filter[0])
         }
     }
 
     private fun other() {
-        result.postValue(0.00f)
+        //rateResponse.postValue(RateResponse("", "", 0.00f))
     }
 
-    fun getResult(): LiveData<Float> {
-        return this.result
+    fun getRateResponse(): LiveData<RateResponse> {
+        return this.rateResponse
+    }
+
+    fun getExchangeValue(): Float {
+        return exchangeValue
+    }
+
+    fun setExchangeValue(exchangeValue: Float) {
+        this.exchangeValue = exchangeValue
     }
 }

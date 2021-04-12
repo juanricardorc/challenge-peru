@@ -4,9 +4,10 @@ import android.content.Context
 import android.content.res.TypedArray
 import android.util.AttributeSet
 import android.view.View
-import android.widget.Button
 import android.widget.EditText
 import androidx.coordinatorlayout.widget.CoordinatorLayout
+import com.google.android.material.button.MaterialButton
+import com.google.android.material.card.MaterialCardView
 import com.juanricardorc.uicomponents.R
 
 class ExchangeRateView : CoordinatorLayout {
@@ -14,10 +15,12 @@ class ExchangeRateView : CoordinatorLayout {
     private lateinit var typedArray: TypedArray
     private lateinit var aboveEditText: EditText
     private lateinit var belowEditText: EditText
-    private lateinit var aboveButton: Button
-    private lateinit var belowButton: Button
+    private lateinit var aboveMaterialButton: MaterialButton
+    private lateinit var belowMaterialButton: MaterialButton
+    private lateinit var exchangeMaterialCardView: MaterialCardView
     private var exchangeRateBelowButtonListener: ExchangeRateBelowButtonListener? = null
     private var exchangeRateAboveButtonListener: ExchangeRateAboveButtonListener? = null
+    private var exchangeButtonListener: ExchangeButtonListener? = null
 
     constructor(context: Context) : super(context) {
         setupView(context)
@@ -47,41 +50,40 @@ class ExchangeRateView : CoordinatorLayout {
     }
 
     private fun setupFindViewById() {
-        aboveButton = findViewById(R.id.above_button)
-        aboveButton.setOnClickListener { view ->
-            run {
-                exchangeRateAboveButtonListener?.let {
-                    exchangeRateAboveButtonListener!!.onAboveValue(view, getAboveText())
-                }
+        aboveMaterialButton = findViewById(R.id.above_material_button)
+        aboveMaterialButton.setOnClickListener { view ->
+            exchangeRateAboveButtonListener?.let {
+                exchangeRateAboveButtonListener!!.onAboveValue(view, getAboveText())
             }
         }
 
-        belowButton = findViewById(R.id.below_button)
-        belowButton.setOnClickListener { view ->
-            run {
-                exchangeRateBelowButtonListener?.let {
-                    exchangeRateBelowButtonListener!!.onBelowValue(view, getBelowText())
-                }
+        belowMaterialButton = findViewById(R.id.below_material_button)
+        belowMaterialButton.setOnClickListener { view ->
+            exchangeRateBelowButtonListener?.let {
+                exchangeRateBelowButtonListener!!.onBelowValue(view, getBelowText())
             }
         }
 
+        exchangeMaterialCardView = findViewById(R.id.exchange_material_card_view)
+        exchangeMaterialCardView.setOnClickListener { view ->
+            exchangeButtonListener?.let {
+                exchangeButtonListener!!.onExchange(view, getAboveText(), getBelowText())
+            }
+        }
         aboveEditText = findViewById(R.id.above_edit_text)
         belowEditText = findViewById(R.id.below_edit_text)
-
     }
 
-    /***
-     * set ExchangeRateBelowButtonListener
-     */
     fun setExchangeRateBelowButtonListener(exchangeRateBelowButtonListener: ExchangeRateBelowButtonListener) {
         this.exchangeRateBelowButtonListener = exchangeRateBelowButtonListener
     }
 
-    /***
-     * set ExchangeRateAboveButtonListener
-     */
     fun setExchangeRateAboveButtonListener(exchangeRateAboveButtonListener: ExchangeRateAboveButtonListener) {
         this.exchangeRateAboveButtonListener = exchangeRateAboveButtonListener
+    }
+
+    fun setExchangeButtonListener(exchangeButtonListener: ExchangeButtonListener) {
+        this.exchangeButtonListener = exchangeButtonListener
     }
 
     fun getAboveText(): String {
@@ -109,11 +111,11 @@ class ExchangeRateView : CoordinatorLayout {
     }
 
     fun setAboveButtonText(text: String) {
-        this.aboveButton.text = text
+        this.aboveMaterialButton.text = text
     }
 
     fun setBelowButtonText(text: String) {
-        this.belowButton.text = text
+        this.belowMaterialButton.text = text
     }
 }
 

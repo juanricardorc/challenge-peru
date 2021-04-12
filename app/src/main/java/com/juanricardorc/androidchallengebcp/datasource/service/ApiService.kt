@@ -17,4 +17,10 @@ interface ApiService {
 
     @GET("exchange-rate/mxn")
     suspend fun getExchangeRateMxn(): Response<ExChangeRateResponse>
+
+    @GET("exchange-rate/Brl")
+    suspend fun getExchangeRateBrl(): Response<ExChangeRateResponse>
+
+    @GET("exchange-rate/Eur")
+    suspend fun getExchangeRateEur(): Response<ExChangeRateResponse>
 }

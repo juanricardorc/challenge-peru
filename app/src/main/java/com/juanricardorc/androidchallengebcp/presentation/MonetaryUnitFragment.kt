@@ -22,18 +22,27 @@ class MonetaryUnitFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        this.binding = FragmentMonetaryUnitBinding.inflate(layoutInflater, container, false)
+        this.binding = FragmentMonetaryUnitBinding
+            .inflate(layoutInflater, container, false)
         setupRecyclerView()
+        setupListeners()
         return binding.root
     }
 
     private fun setupRecyclerView() {
         context?.let { exchangeRateViewModel.getListMonetaryUnit(it) }
-        exchangeRateViewModel.getListMonetaryUnitResponse().observe(viewLifecycleOwner, Observer {
-            var monetaryAdapter: MonetaryAdapter = MonetaryAdapter(it)
-            binding.countriesRecyclerView.layoutManager = LinearLayoutManager(context)
-            binding.countriesRecyclerView.adapter = monetaryAdapter
-        })
+        exchangeRateViewModel.getListMonetaryUnitResponse()
+            .observe(viewLifecycleOwner, Observer { model ->
+                run {
+                    var monetaryAdapter = context?.let { MonetaryUnitAdapter(model, it) }
+                    binding.countriesRecyclerView.layoutManager = LinearLayoutManager(context)
+                    binding.countriesRecyclerView.adapter = monetaryAdapter
+                }
+            })
+    }
+
+    private fun setupListeners() {
+
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

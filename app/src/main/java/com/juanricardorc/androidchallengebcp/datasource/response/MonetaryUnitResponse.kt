@@ -4,5 +4,6 @@ import com.google.gson.annotations.SerializedName
 
 data class MonetaryUnitResponse(
     @SerializedName("country") var country: String,
-    @SerializedName("monetary") var monetary: String
+    @SerializedName("monetary") var monetary: String,
+    @SerializedName("flag") var flag: String
 )
