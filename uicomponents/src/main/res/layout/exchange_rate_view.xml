@@ -22,21 +22,30 @@
                 android:layout_height="wrap_content"
                 android:orientation="horizontal">
 
-                <EditText
-                    android:id="@+id/above_edit_text"
-                    android:layout_width="wrap_content"
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/above_text_input_layout"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                    android:layout_width="100dp"
                     android:layout_height="wrap_content"
-                    android:layout_weight="0.5"
-                    android:hint="0.00" />
+                    android:layout_weight="0.5">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/above_edit_text"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="Tú envías" />
+                </com.google.android.material.textfield.TextInputLayout>
+
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/above_material_button"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_width="124dp"
+                    android:layout_height="66dp"
+                    android:layout_marginLeft="4dp"
                     android:layout_weight="0.5"
                     android:text="Soles"
                     android:textAllCaps="false"
-                    app:cornerRadius="24dp" />
+                    app:cornerRadius="4dp" />
 
             </LinearLayout>
 
@@ -62,21 +71,29 @@
                 android:layout_height="wrap_content"
                 android:orientation="horizontal">
 
-                <EditText
-                    android:id="@+id/below_edit_text"
-                    android:layout_width="wrap_content"
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/below_text_input_layout"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                    android:layout_width="100dp"
                     android:layout_height="wrap_content"
-                    android:layout_weight="0.5"
-                    android:hint="0.00" />
+                    android:layout_weight="0.5">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/below_edit_text"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="Tú recibes" />
+                </com.google.android.material.textfield.TextInputLayout>
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/below_material_button"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_width="124dp"
+                    android:layout_height="66dp"
+                    android:layout_marginLeft="4dp"
                     android:layout_weight="0.5"
                     android:text="Dolares"
                     android:textAllCaps="false"
-                    app:cornerRadius="24dp" />
+                    app:cornerRadius="4dp" />
 
             </LinearLayout>
 

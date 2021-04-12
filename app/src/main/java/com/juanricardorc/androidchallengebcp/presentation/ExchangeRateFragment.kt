@@ -77,7 +77,14 @@ class ExchangeRateFragment : Fragment(), ExchangeRateBelowButtonListener,
         if (!aboveText.isNullOrBlank() && rateResponse != null) {
             var result = aboveText.toFloat() * rateResponse.value
             this.binding.exchangeRateView.setBelowEditText(result.toString())
+            setupInfo(rateResponse)
         }
+    }
+
+    private fun setupInfo(rateResponse: RateResponse) {
+        var country = this.exchangeRateViewModel.getAboveValue().value?.country
+        this.binding.infoTextView.text =
+            "1 " + country + "  ==>>  " + rateResponse.monetary + " : " + rateResponse.value
     }
 
     private fun initialize() {
