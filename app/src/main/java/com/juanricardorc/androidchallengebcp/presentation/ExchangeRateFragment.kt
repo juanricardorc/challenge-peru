@@ -16,9 +16,10 @@ import com.juanricardorc.androidchallengebcp.datasource.response.RateResponse
 import com.juanricardorc.uicomponents.exchangerate.ExchangeButtonListener
 import com.juanricardorc.uicomponents.exchangerate.ExchangeRateAboveButtonListener
 import com.juanricardorc.uicomponents.exchangerate.ExchangeRateBelowButtonListener
+import com.juanricardorc.uicomponents.exchangerate.OnTextChangedAboveListener
 
 class ExchangeRateFragment : Fragment(), ExchangeRateBelowButtonListener,
-    ExchangeRateAboveButtonListener, ExchangeButtonListener {
+    ExchangeRateAboveButtonListener, ExchangeButtonListener, OnTextChangedAboveListener {
 
     private lateinit var binding: FragmentExchangeRateBinding
     private val exchangeRateViewModel: ExchangeRateViewModel by activityViewModels()
@@ -84,14 +85,14 @@ class ExchangeRateFragment : Fragment(), ExchangeRateBelowButtonListener,
     private fun setupInfo(rateResponse: RateResponse) {
         var country = this.exchangeRateViewModel.getAboveValue().value?.country
         this.binding.infoTextView.text =
-            "1 " + country + "  ==>>  " + rateResponse.monetary + " : " + rateResponse.value
+            "1 " + country + "  ->  " + rateResponse.monetary + " : " + rateResponse.value
     }
 
     private fun initialize() {
         this.binding.exchangeRateView.setExchangeRateAboveButtonListener(this)
         this.binding.exchangeRateView.setExchangeRateBelowButtonListener(this)
         this.binding.exchangeRateView.setExchangeButtonListener(this)
-        this.binding.exchangeRateView.setAboveEditText("1")
+        this.binding.exchangeRateView.setOnTextChangedAboveListener(this)
     }
 
     private fun setupAboveButtonText(monetaryUnitResponse: MonetaryUnitResponse) {
@@ -128,6 +129,9 @@ class ExchangeRateFragment : Fragment(), ExchangeRateBelowButtonListener,
             this.exchangeRateViewModel.setBelowValue(it)
         }
 
+        val aboveText = this.binding.exchangeRateView.getAboveText()
+        this.binding.exchangeRateView.setBelowEditText(aboveText)
+
         val belowText = this.binding.exchangeRateView.getBelowText()
         this.binding.exchangeRateView.setAboveEditText(belowText)
 
@@ -153,5 +157,22 @@ class ExchangeRateFragment : Fragment(), ExchangeRateBelowButtonListener,
             }
         }
         return false
+    }
+
+    override fun onTextChangedAbove(
+        charSequence: CharSequence,
+        start: Int,
+        before: Int,
+        count: Int
+    ) {
+        //Log.v("Logbcp: ", "onTextChangedAbove -> $charSequence")
+        var zero = 0.0f
+        var rateResponse = this.exchangeRateViewModel.getRateResponse().value
+        if (!charSequence.isNullOrBlank()) {
+            var result = charSequence.toString().toFloat() * (rateResponse?.value ?: zero)
+            this.binding.exchangeRateView.setBelowEditText(result.toString())
+        } else {
+            this.binding.exchangeRateView.setBelowEditText(zero.toString())
+        }
     }
 }

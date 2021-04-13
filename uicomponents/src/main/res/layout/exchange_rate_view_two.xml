@@ -19,8 +19,6 @@
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:hint="Tú envías"
-            app:expandedHintEnabled="false"
             app:layout_constraintEnd_toStartOf="@+id/above_material_button"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
@@ -30,7 +28,7 @@
                 android:id="@+id/above_edit_text"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="0.00" />
+                android:hint="Tú envías" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.button.MaterialButton
@@ -73,8 +71,6 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            android:hint="Tú recibes"
-            app:expandedHintEnabled="false"
             app:layout_constraintEnd_toStartOf="@+id/below_material_button"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
@@ -84,7 +80,7 @@
                 android:id="@+id/below_edit_text"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="0.00" />
+                android:hint="Tú recibes" />
 
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -92,7 +88,6 @@
             android:id="@+id/below_material_button"
             android:layout_width="0dp"
             android:layout_height="66dp"
-            android:layout_marginLeft="8dp"
             android:layout_marginTop="8dp"
             android:text="Dolares"
             android:textAllCaps="false"

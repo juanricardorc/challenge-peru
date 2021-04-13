@@ -2,25 +2,30 @@ package com.juanricardorc.uicomponents.exchangerate
 
 import android.content.Context
 import android.content.res.TypedArray
+import android.text.Editable
+import android.text.TextWatcher
 import android.util.AttributeSet
 import android.view.View
 import android.widget.EditText
 import androidx.coordinatorlayout.widget.CoordinatorLayout
+import androidx.core.widget.addTextChangedListener
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.card.MaterialCardView
+import com.google.android.material.textfield.TextInputEditText
 import com.juanricardorc.uicomponents.R
 
 class ExchangeRateView : CoordinatorLayout {
 
     private lateinit var typedArray: TypedArray
-    private lateinit var aboveEditText: EditText
-    private lateinit var belowEditText: EditText
+    private lateinit var aboveEditText: TextInputEditText
+    private lateinit var belowEditText: TextInputEditText
     private lateinit var aboveMaterialButton: MaterialButton
     private lateinit var belowMaterialButton: MaterialButton
     private lateinit var exchangeMaterialCardView: MaterialCardView
     private var exchangeRateBelowButtonListener: ExchangeRateBelowButtonListener? = null
     private var exchangeRateAboveButtonListener: ExchangeRateAboveButtonListener? = null
     private var exchangeButtonListener: ExchangeButtonListener? = null
+    private var onTextChangedAboveListener: OnTextChangedAboveListener? = null
 
     constructor(context: Context) : super(context) {
         setupView(context)
@@ -71,7 +76,18 @@ class ExchangeRateView : CoordinatorLayout {
             }
         }
         aboveEditText = findViewById(R.id.above_edit_text)
+        aboveEditText.addTextChangedListener(object : TextWatcher {
+            override fun afterTextChanged(s: Editable) {}
+            override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
+                onTextChangedAboveListener?.onTextChangedAbove(s, start, before, count)
+            }
+        })
         belowEditText = findViewById(R.id.below_edit_text)
+    }
+
+    fun setOnTextChangedAboveListener(onTextChangedAboveListener: OnTextChangedAboveListener) {
+        this.onTextChangedAboveListener = onTextChangedAboveListener
     }
 
     fun setExchangeRateBelowButtonListener(exchangeRateBelowButtonListener: ExchangeRateBelowButtonListener) {
