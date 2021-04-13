@@ -1,6 +1,7 @@
 package com.juanricardorc.androidchallengebcp.presentation
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -33,9 +34,10 @@ class MonetaryUnitFragment : Fragment(), MonetaryUnitListener {
     private fun setupRecyclerView() {
         context?.let { exchangeRateViewModel.getListMonetaryUnit(it) }
         exchangeRateViewModel.getListMonetaryUnitResponse()
-            .observe(viewLifecycleOwner, Observer { model ->
-                run {
-                    var monetaryAdapter = context?.let { MonetaryUnitAdapter(model, it) }
+            .observe(viewLifecycleOwner, Observer { event ->
+                event.peekContent()?.let {
+                    var monetaryAdapter =
+                        context?.let { myContext -> MonetaryUnitAdapter(it, myContext) }
                     monetaryAdapter?.setMonetaryUnitListener(this)
                     binding.countriesRecyclerView.layoutManager = LinearLayoutManager(context)
                     binding.countriesRecyclerView.adapter = monetaryAdapter
@@ -56,6 +58,7 @@ class MonetaryUnitFragment : Fragment(), MonetaryUnitListener {
 
     override fun onClickMonetaryUnit(value: Any) {
         if (value is MonetaryUnitResponse) {
+            Log.v("Logbcp: ", "onClickMonetaryUnit -> ${value.country} -> ${value.monetary}")
             if (exchangeRateViewModel.getAboveFlag()) {
                 this.exchangeRateViewModel.setAboveValue(value)
             } else if (exchangeRateViewModel.getBelowFlag()) {

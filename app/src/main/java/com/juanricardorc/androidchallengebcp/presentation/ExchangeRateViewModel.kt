@@ -18,11 +18,11 @@ import kotlinx.coroutines.launch
 import java.util.stream.Collectors
 
 class ExchangeRateViewModel : ViewModel() {
-    private var aboveValue: MutableLiveData<MonetaryUnitResponse> = MutableLiveData()
-    private var belowValue: MutableLiveData<MonetaryUnitResponse> = MutableLiveData()
+    private val aboveValue: MutableLiveData<Event<MonetaryUnitResponse>> = MutableLiveData()
+    private val belowValue: MutableLiveData<Event<MonetaryUnitResponse>> = MutableLiveData()
 
-    private var rateResponse: MutableLiveData<RateResponse> = MutableLiveData()
-    private var listMonetaryUnitResponse: MutableLiveData<List<MonetaryUnitResponse>> =
+    private val rateResponse: MutableLiveData<Event<RateResponse>> = MutableLiveData()
+    private val listMonetaryUnitResponse: MutableLiveData<Event<List<MonetaryUnitResponse>>> =
         MutableLiveData()
     private var exchangeValue: Float = 0.0f
     private var monetaryUnitNotFound: MutableLiveData<Boolean> = MutableLiveData(false)
@@ -30,14 +30,14 @@ class ExchangeRateViewModel : ViewModel() {
     private var belowFlag: Boolean = false
 
     fun setAboveValue(monetaryUnitResponse: MonetaryUnitResponse) {
-        this.aboveValue.postValue(monetaryUnitResponse)
+        this.aboveValue.postValue(Event(monetaryUnitResponse))
     }
 
     fun setBelowValue(monetaryUnitResponse: MonetaryUnitResponse) {
-        this.belowValue.postValue(monetaryUnitResponse)
+        this.belowValue.postValue(Event(monetaryUnitResponse))
     }
 
-    fun getListMonetaryUnitResponse(): LiveData<List<MonetaryUnitResponse>> {
+    fun getListMonetaryUnitResponse(): LiveData<Event<List<MonetaryUnitResponse>>> {
         return listMonetaryUnitResponse
     }
 
@@ -50,7 +50,7 @@ class ExchangeRateViewModel : ViewModel() {
                 apiService
             )
         viewModelScope.launch(Dispatchers.IO) {
-            listMonetaryUnitResponse.postValue(exchangeRateRepository.getListMonetaryUnit())
+            listMonetaryUnitResponse.postValue(Event(exchangeRateRepository.getListMonetaryUnit()))
             setupMonetaryUnit(exchangeRateRepository.getListMonetaryUnit())
         }
     }
@@ -58,16 +58,16 @@ class ExchangeRateViewModel : ViewModel() {
     private fun setupMonetaryUnit(listMonetaryUnitResponse: List<MonetaryUnitResponse>) {
         if (listMonetaryUnitResponse.size >= TWO) {
             //val shuffled = listMonetaryUnitResponse.shuffled()
-            aboveValue.postValue(listMonetaryUnitResponse[ZERO])
-            belowValue.postValue(listMonetaryUnitResponse[ONE])
+            aboveValue.postValue(Event(listMonetaryUnitResponse[ZERO]))
+            belowValue.postValue(Event(listMonetaryUnitResponse[ONE]))
         }
     }
 
-    fun getAboveValue(): LiveData<MonetaryUnitResponse> {
+    fun getAboveValue(): LiveData<Event<MonetaryUnitResponse>> {
         return aboveValue
     }
 
-    fun getBelowValue(): LiveData<MonetaryUnitResponse> {
+    fun getBelowValue(): LiveData<Event<MonetaryUnitResponse>> {
         return belowValue
     }
 
@@ -169,17 +169,17 @@ class ExchangeRateViewModel : ViewModel() {
     private fun setupResult(exChangeRateResponse: ExChangeRateResponse) {
         val rates = exChangeRateResponse?.rates
         val filter = rates.stream().filter {
-            it.monetary == getBelowValue().value?.monetary
+            it.monetary == getBelowValue().value?.peekContent()?.monetary ?: PEN
         }.collect(Collectors.toList())
 
         if (filter != null && filter.size >= ONE) {
-            rateResponse.postValue(filter[ZERO])
+            rateResponse.postValue(Event(filter[ZERO]))
         } else {
             notFound()
         }
     }
 
-    fun getRateResponse(): LiveData<RateResponse> {
+    fun getRateResponse(): LiveData<Event<RateResponse>> {
         return this.rateResponse
     }
 
