@@ -14,10 +14,7 @@ import com.juanricardorc.androidchallengebcp.R
 import com.juanricardorc.androidchallengebcp.databinding.FragmentExchangeRateBinding
 import com.juanricardorc.androidchallengebcp.datasource.response.MonetaryUnitResponse
 import com.juanricardorc.androidchallengebcp.datasource.response.RateResponse
-import com.juanricardorc.uicomponents.exchangerate.ExchangeButtonListener
-import com.juanricardorc.uicomponents.exchangerate.ExchangeRateAboveButtonListener
-import com.juanricardorc.uicomponents.exchangerate.ExchangeRateBelowButtonListener
-import com.juanricardorc.uicomponents.exchangerate.OnTextChangedAboveListener
+import com.juanricardorc.uicomponents.exchangerate.*
 
 class ExchangeRateFragment : Fragment(), ExchangeRateBelowButtonListener,
     ExchangeRateAboveButtonListener, ExchangeButtonListener, OnTextChangedAboveListener {
@@ -30,11 +27,15 @@ class ExchangeRateFragment : Fragment(), ExchangeRateBelowButtonListener,
         savedInstanceState: Bundle?
     ): View? {
         binding = FragmentExchangeRateBinding.inflate(layoutInflater, container, false)
-        setupObservers()
-        setupToolbar()
-        initialize()
-        Log.v("Logbcp: ", "onCreateView - ExchangeRateFragment")
+        setupExChangeRate()
         return binding.root
+    }
+
+    private fun setupExChangeRate() {
+        setupToolbar()
+        setupObservers()
+        getListMonetaryUnit()
+        initialize()
     }
 
     private fun setupToolbar() {
@@ -43,34 +44,43 @@ class ExchangeRateFragment : Fragment(), ExchangeRateBelowButtonListener,
         (activity as AppCompatActivity?)!!.setSupportActionBar(binding.appBarLayout.toolbar)
     }
 
-    private fun setupObservers() {
-
+    private fun getListMonetaryUnit() {
         context?.let {
             if (this.exchangeRateViewModel.isItWasSeen()) {
                 this.exchangeRateViewModel.getListMonetaryUnit(it)
                 this.exchangeRateViewModel.setItWasSeen(false)
             }
         }
+    }
 
+    private fun initialize() {
+        this.binding.exchangeRateView.setExchangeRateAboveButtonListener(this)
+        this.binding.exchangeRateView.setExchangeRateBelowButtonListener(this)
+        this.binding.exchangeRateView.setExchangeButtonListener(this)
+        this.binding.exchangeRateView.setOnTextChangedAboveListener(this)
+
+        this.binding.exchangeRateView.setAboveEditText(
+            this.exchangeRateViewModel.getCurrentAboveValue().toString()
+        )
+        this.binding.exchangeRateView.setBelowEditText(
+            this.exchangeRateViewModel.getCurrentBelowValue().toString()
+        )
+    }
+
+    private fun setupObservers() {
         exchangeRateViewModel.getAboveValue()
             .observe(viewLifecycleOwner, Observer { event ->
-                event.getContentIfNotHandled()?.let {
-                    setupAboveButtonText(it)
-                }
+                event.getContentIfNotHandled()?.let { setupAboveButtonText(it) }
             })
 
         exchangeRateViewModel.getBelowValue()
             .observe(viewLifecycleOwner, Observer { event ->
-                event.getContentIfNotHandled()?.let {
-                    setupBelowButtonText(it)
-                }
+                event.getContentIfNotHandled()?.let { setupBelowButtonText(it) }
             })
 
         exchangeRateViewModel.getRateResponse()
             .observe(viewLifecycleOwner, Observer { event ->
-                event.getContentIfNotHandled()?.let {
-                    setBelowEditText(it)
-                }
+                event.getContentIfNotHandled()?.let { setBelowEditText(it) }
             })
 
         exchangeRateViewModel.getMonetaryUnitNotFound()
@@ -86,17 +96,14 @@ class ExchangeRateFragment : Fragment(), ExchangeRateBelowButtonListener,
     }
 
     private fun setupAboveButtonText(monetaryUnitResponse: MonetaryUnitResponse) {
-        Log.v(
-            "Logbcp: ", "setupAboveButtonText ->  " +
-                    "${monetaryUnitResponse.country} - ${monetaryUnitResponse.monetary}"
-        )
+        //Log.v("Logbcp: ", "setupAboveButtonText ->  " + "${monetaryUnitResponse.country} - ${monetaryUnitResponse.monetary}")
         binding.exchangeRateView.setAboveButtonText(monetaryUnitResponse.country)
         getExchangeRate(monetaryUnitResponse.monetary)
     }
 
     private fun setBelowEditText(rateResponse: RateResponse) {
         var aboveText = this.binding.exchangeRateView.getAboveText()
-        Log.v("Logbcp: ", "setBelowEditText -> $aboveText - value -> ${rateResponse.value}")
+        //Log.v("Logbcp: ", "setBelowEditText -> $aboveText - value -> ${rateResponse.value}")
         rateResponse?.let {
             setupInfo(rateResponse)
             if (!aboveText.isNullOrEmpty()) {
@@ -106,23 +113,10 @@ class ExchangeRateFragment : Fragment(), ExchangeRateBelowButtonListener,
         }
     }
 
-    override fun onResume() {
-        super.onResume()
-        Log.v("Logbcp: ", "onResume - ExchangeRateFragment")
-    }
-
     private fun setupInfo(rateResponse: RateResponse) {
-        var country = this.exchangeRateViewModel.getAboveValue().value?.peekContent()?.country
-        this.binding.infoTextView.text =
-            "1 " + country + "  ->  " + rateResponse.monetary + " : " + rateResponse.value
-    }
-
-    private fun initialize() {
-        this.binding.exchangeRateView.setExchangeRateAboveButtonListener(this)
-        this.binding.exchangeRateView.setExchangeRateBelowButtonListener(this)
-        this.binding.exchangeRateView.setExchangeButtonListener(this)
-        this.binding.exchangeRateView.setOnTextChangedAboveListener(this)
-        this.binding.exchangeRateView.setAboveEditText("3")
+        var monetary = this.exchangeRateViewModel.getAboveValue().value?.peekContent()?.monetary
+        this.binding.infoTextView.text = ONE.toString() + SPACE + monetary + "  ->  " +
+                rateResponse.value + SPACE + rateResponse.monetary
     }
 
     private fun setupBelowButtonText(monetaryUnitResponse: MonetaryUnitResponse) {
@@ -131,12 +125,26 @@ class ExchangeRateFragment : Fragment(), ExchangeRateBelowButtonListener,
 
     override fun onAboveValue(view: View, value: String) {
         this.exchangeRateViewModel.setOrigen(above = true, below = false)
+        setCurrentAboveValue(this.binding.exchangeRateView.getAboveText())
         goToMonetaryUnitFragment()
     }
 
     override fun onBelowValue(view: View, value: String) {
         this.exchangeRateViewModel.setOrigen(above = false, below = true)
+        setCurrentBelowValue(this.binding.exchangeRateView.getBelowText())
         goToMonetaryUnitFragment()
+    }
+
+    private fun setCurrentAboveValue(value: String) {
+        if (!value.isNullOrEmpty()) {
+            this.exchangeRateViewModel.setCurrentAboveValue(value.toFloat())
+        }
+    }
+
+    private fun setCurrentBelowValue(value: String) {
+        if (!value.isNullOrEmpty()) {
+            this.exchangeRateViewModel.setCurrentBelowValue(value.toFloat())
+        }
     }
 
     private fun goToMonetaryUnitFragment() {
@@ -155,12 +163,8 @@ class ExchangeRateFragment : Fragment(), ExchangeRateBelowButtonListener,
         belowValue?.let { this.exchangeRateViewModel.setAboveValue(it.peekContent()) }
         aboveValue?.let { this.exchangeRateViewModel.setBelowValue(it.peekContent()) }
 
-        //val aboveText = this.binding.exchangeRateView.getAboveText()
-        //this.binding.exchangeRateView.setBelowEditText(aboveText)
-
         val belowText = this.binding.exchangeRateView.getBelowText()
         this.binding.exchangeRateView.setAboveEditText(belowText)
-        //Log.v("Logbcp: ", "onExchange ->  - $belowText")
 
         val newBelowValue = this.exchangeRateViewModel.getBelowValue().value
         //Log.v("Logbcp: ", "newBelowValue -> $newBelowValue")

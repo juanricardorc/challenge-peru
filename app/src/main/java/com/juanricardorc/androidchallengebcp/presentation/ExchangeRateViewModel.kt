@@ -24,7 +24,8 @@ class ExchangeRateViewModel : ViewModel() {
     private val rateResponse: MutableLiveData<Event<RateResponse>> = MutableLiveData()
     private val listMonetaryUnitResponse: MutableLiveData<Event<List<MonetaryUnitResponse>>> =
         MutableLiveData()
-    private var exchangeValue: Float = 0.0f
+    private var currentAboveValue: Float = 0.0f
+    private var currentBelowValue: Float = 0.0f
     private var monetaryUnitNotFound: MutableLiveData<Boolean> = MutableLiveData(false)
     private var aboveFlag: Boolean = false
     private var belowFlag: Boolean = false
@@ -184,12 +185,20 @@ class ExchangeRateViewModel : ViewModel() {
         return this.rateResponse
     }
 
-    fun getExchangeValue(): Float {
-        return exchangeValue
+    fun getCurrentAboveValue(): Float {
+        return this.currentAboveValue
     }
 
-    fun setExchangeValue(exchangeValue: Float) {
-        this.exchangeValue = exchangeValue
+    fun setCurrentAboveValue(value: Float) {
+        this.currentAboveValue = value
+    }
+
+    fun getCurrentBelowValue(): Float {
+        return this.currentBelowValue
+    }
+
+    fun setCurrentBelowValue(value: Float) {
+        this.currentBelowValue = value
     }
 
     fun setOrigen(above: Boolean, below: Boolean) {
