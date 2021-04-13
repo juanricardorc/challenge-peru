@@ -28,6 +28,7 @@ class ExchangeRateViewModel : ViewModel() {
     private var monetaryUnitNotFound: MutableLiveData<Boolean> = MutableLiveData(false)
     private var aboveFlag: Boolean = false
     private var belowFlag: Boolean = false
+    private var itWasSeen: Boolean = true
 
     fun setAboveValue(monetaryUnitResponse: MonetaryUnitResponse) {
         this.aboveValue.postValue(Event(monetaryUnitResponse))
@@ -202,5 +203,13 @@ class ExchangeRateViewModel : ViewModel() {
 
     fun getBelowFlag(): Boolean {
         return belowFlag
+    }
+
+    fun isItWasSeen(): Boolean {
+        return itWasSeen
+    }
+
+    fun setItWasSeen(itWasSeen: Boolean) {
+        this.itWasSeen = itWasSeen
     }
 }
