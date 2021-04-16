@@ -32,7 +32,7 @@ class MonetaryUnitFragment : Fragment(), MonetaryUnitListener {
     }
 
     private fun setupRecyclerView() {
-        context?.let { exchangeRateViewModel.getListMonetaryUnit(it) }
+        context?.let { exchangeRateViewModel.getListUpdatedMonetaryUnit() }
         exchangeRateViewModel.getListMonetaryUnitResponse()
             .observe(viewLifecycleOwner, Observer { event ->
                 event.peekContent()?.let {

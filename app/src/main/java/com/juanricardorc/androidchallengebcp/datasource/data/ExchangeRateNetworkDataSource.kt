@@ -14,7 +14,7 @@ class ExchangeRateNetworkDataSource :
         this.apiService = apiService
     }
 
-    suspend fun getListMonetaryUnit(): List<MonetaryUnitResponse> {
+    override suspend fun getListMonetaryUnit(): List<MonetaryUnitResponse> {
         val monetaryUnitListResponse = this.apiService.getMonetaryUnitListResponse()
         return if (monetaryUnitListResponse.isSuccessful) {
             val body = monetaryUnitListResponse.body()
@@ -26,7 +26,7 @@ class ExchangeRateNetworkDataSource :
 
     override suspend fun getExchangeRateUsd(monetary: String): ExChangeRateResponse? {
         val exchangeRate = this.apiService.getExchangeRateUsd()
-        return exchangeRate.body()!!
+        return exchangeRate.body()
     }
 
     override suspend fun getExchangeRatePen(monetary: String): ExChangeRateResponse? {

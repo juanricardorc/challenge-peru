@@ -12,12 +12,14 @@ import com.juanricardorc.androidchallengebcp.datasource.response.MonetaryUnitRes
 import com.juanricardorc.androidchallengebcp.datasource.response.RateResponse
 import com.juanricardorc.androidchallengebcp.datasource.service.ApiService
 import com.juanricardorc.androidchallengebcp.domain.repository.ExchangeRateRepository
+import com.juanricardorc.androidchallengebcp.domain.usecase.GetListMonetaryUnit
 import com.juanricardorc.uicomponents.exchangerate.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.util.stream.Collectors
 
-class ExchangeRateViewModel : ViewModel() {
+class ExchangeRateViewModel(private val getListMonetaryUnit: GetListMonetaryUnit) : ViewModel() {
     private val aboveValue: MutableLiveData<Event<MonetaryUnitResponse>> = MutableLiveData()
     private val belowValue: MutableLiveData<Event<MonetaryUnitResponse>> = MutableLiveData()
 
@@ -43,17 +45,11 @@ class ExchangeRateViewModel : ViewModel() {
         return listMonetaryUnitResponse
     }
 
-    fun getListMonetaryUnit(context: Context) {
-        var apiService = ExchangeRateClient
-            .getInstance(context)
-            .createService(ApiService::class.java)
-        var exchangeRateRepository =
-            ExchangeRateNetworkDataSource(
-                apiService
-            )
-        viewModelScope.launch(Dispatchers.IO) {
-            listMonetaryUnitResponse.postValue(Event(exchangeRateRepository.getListMonetaryUnit()))
-            setupMonetaryUnit(exchangeRateRepository.getListMonetaryUnit())
+    fun getListUpdatedMonetaryUnit() {
+        viewModelScope.launch(Dispatchers.Main) {
+            val monetaryUnitResponse = withContext(Dispatchers.IO) { getListMonetaryUnit() }
+            listMonetaryUnitResponse.postValue(Event(monetaryUnitResponse))
+            setupMonetaryUnit(monetaryUnitResponse)
         }
     }
 

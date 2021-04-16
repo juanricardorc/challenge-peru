@@ -9,11 +9,17 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.juanricardorc.androidchallengebcp.R
 import com.juanricardorc.androidchallengebcp.databinding.FragmentExchangeRateBinding
+import com.juanricardorc.androidchallengebcp.datasource.data.ExchangeRateNetworkDataSource
+import com.juanricardorc.androidchallengebcp.datasource.network.ExchangeRateClient
 import com.juanricardorc.androidchallengebcp.datasource.response.MonetaryUnitResponse
 import com.juanricardorc.androidchallengebcp.datasource.response.RateResponse
+import com.juanricardorc.androidchallengebcp.datasource.service.ApiService
+import com.juanricardorc.androidchallengebcp.domain.repository.ExchangeRateRepository
+import com.juanricardorc.androidchallengebcp.domain.usecase.GetListMonetaryUnit
 import com.juanricardorc.uicomponents.exchangerate.*
 
 class ExchangeRateFragment : Fragment(), ExchangeRateBelowButtonListener,
@@ -33,8 +39,8 @@ class ExchangeRateFragment : Fragment(), ExchangeRateBelowButtonListener,
 
     private fun setupExChangeRate() {
         setupToolbar()
-        setupObservers()
         getListMonetaryUnit()
+        setupObservers()
         initialize()
     }
 
@@ -45,11 +51,9 @@ class ExchangeRateFragment : Fragment(), ExchangeRateBelowButtonListener,
     }
 
     private fun getListMonetaryUnit() {
-        context?.let {
-            if (this.exchangeRateViewModel.isItWasSeen()) {
-                this.exchangeRateViewModel.getListMonetaryUnit(it)
-                this.exchangeRateViewModel.setItWasSeen(false)
-            }
+        if (this.exchangeRateViewModel.isItWasSeen()) {
+            this.exchangeRateViewModel.getListUpdatedMonetaryUnit()
+            this.exchangeRateViewModel.setItWasSeen(false)
         }
     }
 
